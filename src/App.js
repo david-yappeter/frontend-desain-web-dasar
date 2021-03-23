@@ -1,25 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import {
+  ApolloClient,
+  InMemoryCache,
+  createHttpLink,
+  ApolloProvider,
+} from "@apollo/client";
+import { BrowserRouter, Route } from "react-router-dom";
+import { Home, Register, Login } from "./pages/index";
+import { Container } from "semantic-ui-react";
+import MenuBar from "./components/MenuBar";
 
-function App() {
+const App = () => {
+  const httpLink = createHttpLink({
+    uri: process.env.REACT_APP_GRAPHQL_LINK,
+  });
+  const client = new ApolloClient({
+    link: httpLink,
+    cache: new InMemoryCache(),
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ApolloProvider client={client}>
+      <BrowserRouter>
+        <Container>
+          <MenuBar />
+          <Route exact path="/" component={Home} />
+          <Route exact path="/register" component={Register} />
+          <Route exact path="/login" component={Login} />
+        </Container>
+      </BrowserRouter>
+    </ApolloProvider>
   );
-}
+};
 
 export default App;

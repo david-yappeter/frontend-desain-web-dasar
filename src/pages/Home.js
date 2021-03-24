@@ -1,16 +1,12 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
-import { Grid, Image } from "semantic-ui-react";
+import { Grid } from "semantic-ui-react";
 import { QUERY_POSTS_GET_ALL } from "./../graphqls/index";
 
 import PostCard from "./../components/PostCard";
 
 const Home = () => {
   const { loading, data } = useQuery(QUERY_POSTS_GET_ALL);
-
-  if (data) {
-    console.log(data);
-  }
 
   return (
     <Grid columns={3} divided>

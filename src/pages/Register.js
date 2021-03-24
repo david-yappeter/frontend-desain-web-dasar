@@ -1,30 +1,42 @@
 import React, { useState } from "react";
-import { Form } from "semantic-ui-react";
+import { Form, Button } from "semantic-ui-react";
+import { useMutation } from "@apollo/client";
+import { REGISTER_USER } from "./../graphqls/index";
+import { useForm } from "./../utils/hooks";
+import {  useCookies } from "react-cookie";
+import {Redirect} from "react-router-dom";
 
-const Register = () => {
-  const [values, setValues] = useState({
+const Register = (props) => {
+  const [cookies, setCookies] = useCookies();
+  const initialState = {
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
+  };
+  const { values, onChange, onSubmit } = useForm(
+    () => registUser(),
+    initialState
+  );
+  const [registUser, { loading }] = useMutation(REGISTER_USER, {
+    variables: values,
+    update(_, result) {
+      props.history.push("/");
+    },
+    onError(err) {
+      console.log(err.graphQLErrors[0]);
+      setErrors(err.graphQLErrors[0]);
+    },
   });
+  const [errors, setErrors] = useState({});
 
-  const onChange = (e) => {
-    const { name, value } = e.target;
-    setValues((prev) => ({ ...prev, [name]: value }));
-  };
-  const onSubmit = () => {
-    setValues({
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    });
-  };
+  if(cookies.access_token){
+    return <Redirect to="/" />
+  }
 
   return (
-    <div>
-      <Form onSubmite={onSubmit} noValidate>
+    <div style={{ maxWidth: "500px", margin: "auto" }}>
+      <Form onSubmit={onSubmit} noValidate className={loading ? "loading" : ""}>
         <h1 style={{ textAlign: "center" }}>Register</h1>
         <Form.Input
           label="Name"
@@ -32,6 +44,14 @@ const Register = () => {
           name="name"
           value={values.name}
           onChange={onChange}
+        />
+        <Form.Input
+          label="Email"
+          placeholder="Email"
+          name="email"
+          value={values.email}
+          onChange={onChange}
+          type="email"
         />
         <Form.Input
           label="Password"
@@ -42,14 +62,24 @@ const Register = () => {
           type="password"
         />
         <Form.Input
-          label="Email"
-          placeholder="Email"
-          name="email"
-          value={values.email}
+          label="Confirm Password"
+          placeholder="Confirm Password"
+          name="confirmPassword"
+          value={values.confirmPassword}
           onChange={onChange}
-          type="email"
+          type="password"
         />
+        <Button type="submit" primary>
+          Register
+        </Button>
       </Form>
+      {errors.message && (
+        <div className="ui error message">
+          <ul className="list">
+            <li key={errors.message}>{errors.message}</li>
+          </ul>
+        </div>
+      )}
     </div>
   );
 };

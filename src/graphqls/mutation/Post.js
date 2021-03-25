@@ -21,4 +21,18 @@ const DELETE_POST = gql`
   }
 `;
 
-export { CREATE_POST, DELETE_POST };
+const POST_LIKE = gql`
+mutation PostLike ($postID: ID!){
+  post_like{
+    create(input:{
+      post_id: $postID
+    }){
+      id
+      created_at
+      user_id
+    }
+  }
+}
+`
+
+export { CREATE_POST, DELETE_POST, POST_LIKE };

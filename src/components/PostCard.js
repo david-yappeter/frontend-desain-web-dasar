@@ -1,11 +1,12 @@
 import React from "react";
-import { Card, Icon, Label, Image, Button } from "semantic-ui-react";
+import { Form, Card, Icon, Label, Image, Button } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import jwtDecode from "jwt-decode";
 import { useCookies } from "react-cookie";
 import { DELETE_POST, QUERY_POSTS_GET_ALL } from "./../graphqls/index";
 import { useMutation } from "@apollo/client";
+import LikeButton from "./LikeButton"
 
 const PostCard = (props) => {
   const [cookies] = useCookies();
@@ -52,10 +53,6 @@ const PostCard = (props) => {
     },
   });
 
-  const handleLikePost = () => {
-    console.log("like post");
-  };
-
   const handleCommendClick = () => {
     console.log("commend post");
   };
@@ -65,7 +62,7 @@ const PostCard = (props) => {
   };
 
   return (
-    <div className={loading ? "loading" : ""}>
+    <Form className={loading ? "loading" : ""}>
       <Card fluid>
         <Card.Content as={Link} to={`/post/${id}`}>
           <Image
@@ -78,14 +75,7 @@ const PostCard = (props) => {
           <Card.Description>{body}</Card.Description>
         </Card.Content>
         <Card.Content extra>
-          <Button as="div" labelPosition="right" onClick={handleLikePost}>
-            <Button color="teal" basic>
-              <Icon name="heart" />
-            </Button>
-            <Label as="a" basic color="red" pointing="left">
-              {likes.length}
-            </Label>
-          </Button>
+          <LikeButton post={{id, likes}}/>
           <Button as="div" labelPosition="right" onClick={handleCommendClick}>
             <Button color="blue">
               <Icon name="comments" />
@@ -100,13 +90,14 @@ const PostCard = (props) => {
                 as="div"
                 color="red"
                 floated="right"
-                onClick={handleDeletePost}>
-                <Icon name="trash" />
+                onClick={handleDeletePost}
+              >
+                <Icon name="trash" style={{ margin: "0" }} />
               </Button>
             )}
         </Card.Content>
       </Card>
-    </div>
+    </Form>
   );
 };
 

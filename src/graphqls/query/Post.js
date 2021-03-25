@@ -16,10 +16,12 @@ const QUERY_POSTS_GET_ALL = gql`
         commends {
           id
           body
+          user_id
         }
         likes {
           id
           created_at
+          user_id
         }
         user {
           name

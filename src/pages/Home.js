@@ -1,12 +1,19 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { useQuery } from "@apollo/client";
 import { Grid } from "semantic-ui-react";
 import { QUERY_POSTS_GET_ALL } from "./../graphqls/index";
+import { useCookies } from "react-cookie";
 
-import PostCard from "./../components/PostCard";
+import { PostCard, PostForm } from "./../components/index";
 
 const Home = () => {
-  const { loading, data } = useQuery(QUERY_POSTS_GET_ALL);
+  const [cookies] = useCookies();
+  const { loading, data } = useQuery(QUERY_POSTS_GET_ALL, {
+    variables: {
+      sortBy: "created_at",
+      ascending: false,
+    },
+  });
 
   return (
     <Grid columns={3} divided>
@@ -17,12 +24,19 @@ const Home = () => {
         {loading ? (
           <h1> Loading Posts</h1>
         ) : (
-          data.posts.total_data &&
-          data.posts.nodes.map((post) => (
-            <Grid.Column key={post.id} style={{ marginBottom: "20px" }}>
-              <PostCard post={post} />
-            </Grid.Column>
-          ))
+          <Fragment>
+            {cookies.access_token && (
+              <Grid.Column style={{ marginBottom: "20px" }}>
+                <PostForm />
+              </Grid.Column>
+            )}
+            {data.posts.nodes.length > 0 &&
+              data.posts.nodes.map((post) => (
+                <Grid.Column key={post.id} style={{ marginBottom: "20px" }}>
+                  <PostCard post={post} />
+                </Grid.Column>
+              ))}
+          </Fragment>
         )}
       </Grid.Row>
     </Grid>

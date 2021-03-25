@@ -2,18 +2,35 @@ import React from "react";
 import { Card, Icon, Label, Image, Button } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import jwtDecode from "jwt-decode";
+import { useCookies } from "react-cookie";
+import { DELETE_POST } from "./../graphqls/index";
+import { useMutation } from "@apollo/client";
 
 const PostCard = (props) => {
+  const [cookies] = useCookies();
   const {
     post: {
       id,
       body,
       created_at,
+      user_id,
       user: { name },
       likes,
       commends,
     },
   } = props;
+  const [deletePost, { loading }] = useMutation(DELETE_POST, {
+    update(_, result) {
+      console.log(result);
+    },
+    onError(err) {
+      console.log(err);
+    },
+    variables: {
+      id: id,
+    },
+  });
 
   const handleLikePost = () => {
     console.log("like post");
@@ -21,6 +38,10 @@ const PostCard = (props) => {
 
   const handleCommendClick = () => {
     console.log("commend post");
+  };
+
+  const handleDeletePost = () => {
+    deletePost();
   };
 
   return (
@@ -52,6 +73,16 @@ const PostCard = (props) => {
             {commends.length}
           </Label>
         </Button>
+        {cookies.access_token &&
+          jwtDecode(cookies.access_token).id === user_id && (
+            <Button
+              as="div"
+              color="red"
+              floated="right"
+              onClick={handleDeletePost}>
+              <Icon name="trash" />
+            </Button>
+          )}
       </Card.Content>
     </Card>
   );

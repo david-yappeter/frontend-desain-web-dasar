@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 const QUERY_POSTS_GET_ALL = gql`
-  query {
-    posts {
+  query POST_GET_ALL($sortBy: String, $ascending: Boolean) {
+    posts(sort_by: $sortBy, ascending: $ascending) {
       limit
       page
       sort_by

@@ -11,7 +11,6 @@ const useForm = (callback, initialState = {}) => {
   const onSubmit = (e) => {
     e.preventDefault();
     callback();
-    
   };
 
   return {

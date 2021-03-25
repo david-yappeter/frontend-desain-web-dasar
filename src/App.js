@@ -27,8 +27,8 @@ const App = () => {
   });
 
   return (
-    <CookiesProvider>
-      <ApolloProvider client={client}>
+    <ApolloProvider client={client}>
+      <CookiesProvider>
         <BrowserRouter>
           <Container>
             <MenuBar />
@@ -37,8 +37,8 @@ const App = () => {
             <Route exact path="/login" component={Login} />
           </Container>
         </BrowserRouter>
-      </ApolloProvider>
-    </CookiesProvider>
+      </CookiesProvider>
+    </ApolloProvider>
   );
 };
 

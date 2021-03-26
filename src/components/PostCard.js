@@ -6,7 +6,7 @@ import jwtDecode from "jwt-decode";
 import { useCookies } from "react-cookie";
 import { DELETE_POST, QUERY_POSTS_GET_ALL } from "./../graphqls/index";
 import { useMutation } from "@apollo/client";
-import LikeButton from "./LikeButton"
+import LikeButton from "./LikeButton";
 
 const PostCard = (props) => {
   const [cookies] = useCookies();
@@ -30,7 +30,6 @@ const PostCard = (props) => {
           sortBy: "created_at",
         },
       });
-      console.log(result);
       cache.writeQuery({
         query: QUERY_POSTS_GET_ALL,
         variables: {
@@ -50,6 +49,13 @@ const PostCard = (props) => {
     },
     variables: {
       id: id,
+    },
+    context: {
+      headers: {
+        Authorization: cookies.access_token
+          ? `Bearer ${cookies.access_token}`
+          : "",
+      },
     },
   });
 
@@ -75,7 +81,7 @@ const PostCard = (props) => {
           <Card.Description>{body}</Card.Description>
         </Card.Content>
         <Card.Content extra>
-          <LikeButton post={{id, likes}}/>
+          <LikeButton post={{ id, likes }} />
           <Button as="div" labelPosition="right" onClick={handleCommendClick}>
             <Button color="blue">
               <Icon name="comments" />

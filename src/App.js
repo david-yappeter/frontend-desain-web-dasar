@@ -4,6 +4,7 @@ import {
   InMemoryCache,
   createHttpLink,
   ApolloProvider,
+  ApolloLink,
 } from "@apollo/client";
 import { BrowserRouter, Route } from "react-router-dom";
 import { CookiesProvider, useCookies } from "react-cookie";
@@ -15,14 +16,22 @@ const App = () => {
   const [cookies] = useCookies();
   const httpLink = createHttpLink({
     uri: process.env.REACT_APP_GRAPHQL_LINK,
-    headers: {
-      Authorization: cookies.access_token
-        ? "Bearer " + cookies.access_token
-        : "",
-    },
   });
+
+  const authMiddleware = new ApolloLink((operation, forward) => {
+    const customHeaders = operation.getContext().hasOwnProperty("headers")
+      ? operation.getContext().headers
+      : {};
+    operation.setContext({
+      headers: {
+        ...customHeaders,
+      },
+    });
+    return forward(operation);
+  });
+
   const client = new ApolloClient({
-    link: httpLink,
+    link: authMiddleware.concat(httpLink),
     cache: new InMemoryCache(),
   });
 

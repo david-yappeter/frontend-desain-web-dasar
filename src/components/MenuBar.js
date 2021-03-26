@@ -11,13 +11,21 @@ const MenuBar = () => {
   const pathname = window.location.pathname;
   const path = pathname === "/" ? "home" : pathname.substring(1);
   const [activeItem, setActiveItem] = useState(path);
-  const [meUser, { loading, called, data }] = useLazyQuery(USER_ME);
+  const [meUser, { loading, called, data }] = useLazyQuery(USER_ME, {
+    context: {
+      headers: {
+        Authorization: cookies.access_token
+          ? "Bearer " + cookies.access_token
+          : "",
+      },
+    },
+  });
 
   useEffect(() => {
     if (cookies.access_token) {
       meUser();
     }
-  }, []);
+  }, [cookies.access_token]);
 
   const handleLogout = () => {
     removeCookies("access_token");

@@ -4,17 +4,72 @@ import { useMutation } from "@apollo/client";
 import { useCookies } from "react-cookie";
 import { Form, Card, Icon, Label, Image, Button } from "semantic-ui-react";
 import jwtDecode from "jwt-decode";
-import { POST_LIKE } from "./../graphqls/index";
+import { POST_LIKE, QUERY_POSTS_GET_ALL } from "./../graphqls/index";
 
 const LikeButton = (props) => {
   const { id, likes } = props.post;
-  const [postLike] = useMutation(POST_LIKE, {
+  const [cookies] = useCookies();
+  const [postLike, { loading }] = useMutation(POST_LIKE, {
+    update(cache, result) {
+      const data = cache.readQuery({
+        query: QUERY_POSTS_GET_ALL,
+        variables: {
+          ascending: false,
+          sortBy: "created_at",
+        },
+      });
+
+      cache.writeQuery({
+        query: QUERY_POSTS_GET_ALL,
+        data: result.data.post_like.like_or_unlike
+          ? {
+              posts: {
+                nodes: data.posts.nodes.map((post) => {
+                  return {
+                    ...post,
+                    likes:
+                      post.id === id
+                        ? [...post.likes, result.data.post_like.like_or_unlike]
+                        : post.likes,
+                  };
+                }),
+              },
+            }
+          : {
+              posts: {
+                nodes: data.posts.nodes.map((post) => {
+                  return {
+                    ...post,
+                    likes:
+                      post.id === id
+                        ? post.likes.filter(
+                            (like) =>
+                              like.user_id !==
+                              jwtDecode(cookies.access_token).id
+                          )
+                        : post.likes,
+                  };
+                }),
+              },
+            },
+        variables: {
+          ascending: false,
+          sortBy: "created_at",
+        },
+      });
+    },
     variables: {
       postID: id,
     },
+    context: {
+      headers: {
+        Authorization: cookies.access_token
+          ? `Bearer ${cookies.access_token}`
+          : "",
+      },
+    },
   });
   const [buttonLike, setButtonLike] = useState(false);
-  const [cookies] = useCookies();
 
   useEffect(() => {
     if (
@@ -25,14 +80,14 @@ const LikeButton = (props) => {
     } else {
       setButtonLike(false);
     }
-  }, [buttonLike, cookies.access_token]);
+  }, [buttonLike, likes]);
 
   const handlePostLike = () => postLike();
 
   const LikedButton = () =>
     cookies.access_token ? (
       buttonLike ? (
-        <Button color="teal">
+        <Button color="teal" onClick={handlePostLike}>
           <Icon name="heart" />
         </Button>
       ) : (
@@ -47,12 +102,17 @@ const LikeButton = (props) => {
     );
 
   return (
-    <Button as="div" labelPosition="right">
-      <LikedButton />
-      <Label as="a" basic color="red" pointing="left">
-        {likes.length}
-      </Label>
-    </Button>
+    <Form
+      className={loading ? "loading" : ""}
+      style={{ display: "inline-flex" }}
+    >
+      <Button as="div" labelPosition="right">
+        <LikedButton />
+        <Label as="a" basic color="red" pointing="left">
+          {likes.length}
+        </Label>
+      </Button>
+    </Form>
   );
 };
 

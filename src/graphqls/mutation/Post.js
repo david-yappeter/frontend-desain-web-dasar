@@ -22,11 +22,9 @@ const DELETE_POST = gql`
 `;
 
 const POST_LIKE = gql`
-mutation PostLike ($postID: ID!){
+mutation PostLike($postID: ID!){
   post_like{
-    create(input:{
-      post_id: $postID
-    }){
+    like_or_unlike(post_id: $postID){
       id
       created_at
       user_id

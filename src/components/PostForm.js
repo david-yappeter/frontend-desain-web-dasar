@@ -6,6 +6,7 @@ import { useMutation } from "@apollo/client";
 import { CREATE_POST, QUERY_POSTS_GET_ALL } from "./../graphqls/index";
 
 const PostForm = () => {
+  const [cookies] = useCookies();
   const [errors, setErrors] = useState({});
   const initialValue = {
     body: "",
@@ -42,6 +43,13 @@ const PostForm = () => {
     onError(err) {
       setErrors(err.graphQLErrors[0]);
     },
+    context: {
+      headers: {
+        Authorization: cookies.access_token
+          ? `Bearer ${cookies.access_token}`
+          : "",
+      },
+    },
   });
 
   return (
@@ -54,7 +62,8 @@ const PostForm = () => {
           onSubmit={onSubmit}
           novalidation
           className={loading ? "loading" : "'"}
-          style={{ width: "inherit" }}>
+          style={{ width: "inherit" }}
+        >
           <Form.Input
             label="Content"
             placeholder="Content..."

@@ -1,4 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+const useWindowWidth = () => {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  return windowWidth;
+};
 
 const useForm = (callback, initialState = {}) => {
   const [values, setValues] = useState(initialState);
@@ -20,4 +38,4 @@ const useForm = (callback, initialState = {}) => {
   };
 };
 
-export { useForm };
+export { useForm, useWindowWidth };

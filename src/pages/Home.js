@@ -4,9 +4,12 @@ import { Grid, Transition, Button, Icon } from "semantic-ui-react";
 import { QUERY_POSTS_GET_ALL } from "./../graphqls/index";
 import { useCookies } from "react-cookie";
 
+import { useWindowWidth } from "./../utils/hooks";
 import { PostCard, PostForm } from "./../components/index";
 
 const Home = () => {
+  const windowWidth = useWindowWidth();
+  const divider = windowWidth >= 1100 ? 3 : windowWidth > 700 ? 2 : 1;
   const [cookies] = useCookies();
   const [postGetAll, { loading, data, refetch }] = useLazyQuery(
     QUERY_POSTS_GET_ALL,
@@ -23,7 +26,7 @@ const Home = () => {
   }, []);
 
   return (
-    <Grid columns={3} divided>
+    <Grid columns={divider} divided={divider !== 1}>
       <Grid.Row className="page-title">
         <Button
           style={{ marginLeft: "15px" }}
@@ -34,8 +37,7 @@ const Home = () => {
               sortBy: "created_at",
               ascending: false,
             })
-          }
-        >
+          }>
           <Icon name="sync" style={{ margin: "0" }} />
         </Button>
         <span>Recent Posts</span>

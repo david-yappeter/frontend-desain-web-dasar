@@ -30,4 +30,32 @@ const QUERY_POSTS_GET_ALL = gql`
     }
   }
 `;
-export { QUERY_POSTS_GET_ALL };
+
+const POST_GET_BY_ID = gql`
+query POST_GET_BY_ID ($id: ID!){
+  post(id: $id){
+    id
+    body
+    created_at
+    user_id
+    likes{
+      id
+      user_id
+      post_id
+    }
+    commends{
+      id
+      body
+      created_at
+      user{
+        name
+      }
+    }
+    user{
+      name
+    }
+  }
+}
+`
+
+export { QUERY_POSTS_GET_ALL, POST_GET_BY_ID };

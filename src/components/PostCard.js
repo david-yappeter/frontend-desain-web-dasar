@@ -22,7 +22,7 @@ const PostCard = (props) => {
     },
   } = props;
   const [deletePost, { loading }] = useMutation(DELETE_POST, {
-    update(cache, result) {
+    update(cache) {
       const data = cache.readQuery({
         query: QUERY_POSTS_GET_ALL,
         variables: {
@@ -78,7 +78,11 @@ const PostCard = (props) => {
           />
           <Card.Header>{name}</Card.Header>
           <Card.Meta>{moment(created_at).fromNow()}</Card.Meta>
-          <Card.Description>{body}</Card.Description>
+          <Card.Description>
+            <div style={{ wordWrap: "break-word", flex: "inherit" }}>
+              {body}
+            </div>
+          </Card.Description>
         </Card.Content>
         <Card.Content extra>
           <LikeButton post={{ id, likes }} />
@@ -96,8 +100,7 @@ const PostCard = (props) => {
                 as="div"
                 color="red"
                 floated="right"
-                onClick={handleDeletePost}
-              >
+                onClick={handleDeletePost}>
                 <Icon name="trash" style={{ margin: "0" }} />
               </Button>
             )}

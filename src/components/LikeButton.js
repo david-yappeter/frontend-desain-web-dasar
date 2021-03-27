@@ -7,10 +7,13 @@ import jwtDecode from "jwt-decode";
 import { POST_LIKE, QUERY_POSTS_GET_ALL } from "./../graphqls/index";
 
 const LikeButton = (props) => {
+  const { refetch } = props;
   const { id, likes } = props.post;
   const [cookies] = useCookies();
   const [postLike, { loading }] = useMutation(POST_LIKE, {
     update(cache, result) {
+      refetch && refetch();
+
       const data = cache.readQuery({
         query: QUERY_POSTS_GET_ALL,
         variables: {
@@ -24,7 +27,7 @@ const LikeButton = (props) => {
         data: result.data.post_like.like_or_unlike
           ? {
               posts: {
-                nodes: data.posts.nodes.map((post) => {
+                nodes: data?.posts.nodes.map((post) => {
                   return {
                     ...post,
                     likes:
@@ -37,7 +40,7 @@ const LikeButton = (props) => {
             }
           : {
               posts: {
-                nodes: data.posts.nodes.map((post) => {
+                nodes: data?.posts.nodes.map((post) => {
                   return {
                     ...post,
                     likes:
@@ -104,8 +107,7 @@ const LikeButton = (props) => {
   return (
     <Form
       className={loading ? "loading" : ""}
-      style={{ display: "inline-flex" }}
-    >
+      style={{ display: "inline-flex" }}>
       <Button as="div" labelPosition="right">
         <LikedButton />
         <Label as="a" basic color="red" pointing="left">

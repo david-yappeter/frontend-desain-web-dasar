@@ -1,7 +1,13 @@
 import { QUERY_POSTS_GET_ALL, POST_GET_BY_ID } from "./query/Post";
 import { REGISTER_USER, LOGIN_USER } from "./mutation/Auth";
 import { USER_ME } from "./query/Me";
-import { CREATE_POST, DELETE_POST, POST_LIKE } from "./mutation/Post";
+import {
+  CREATE_POST,
+  DELETE_POST,
+  POST_LIKE,
+  POST_COMMEND_CREATE,
+  POST_COMMEND_DELETE,
+} from "./mutation/Post";
 
 export {
   DELETE_POST,
@@ -12,4 +18,6 @@ export {
   POST_LIKE,
   CREATE_POST,
   POST_GET_BY_ID,
+  POST_COMMEND_CREATE,
+  POST_COMMEND_DELETE,
 };

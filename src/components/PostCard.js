@@ -1,5 +1,13 @@
 import React from "react";
-import { Form, Card, Icon, Label, Image, Button } from "semantic-ui-react";
+import {
+  Form,
+  Card,
+  Icon,
+  Label,
+  Image,
+  Button,
+  Popup,
+} from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import jwtDecode from "jwt-decode";
@@ -59,13 +67,26 @@ const PostCard = (props) => {
     },
   });
 
-  const handleCommendClick = () => {
-    console.log("commend post");
-  };
-
   const handleDeletePost = () => {
     deletePost();
   };
+
+  const CommendButton = () => (
+    <Popup
+      content="Comment This Post"
+      inverted
+      trigger={
+        <Button as={Link} to={`post/${id}`} labelPosition="right">
+          <Button color="blue">
+            <Icon name="comments" />
+          </Button>
+          <Label as="a" basic color="red" pointing="left">
+            {commends.length}
+          </Label>
+        </Button>
+      }
+    />
+  );
 
   return (
     <Form className={loading ? "loading" : ""}>
@@ -86,21 +107,15 @@ const PostCard = (props) => {
         </Card.Content>
         <Card.Content extra>
           <LikeButton post={{ id, likes }} />
-          <Button as="div" labelPosition="right" onClick={handleCommendClick}>
-            <Button color="blue">
-              <Icon name="comments" />
-            </Button>
-            <Label as="a" basic color="red" pointing="left">
-              {commends.length}
-            </Label>
-          </Button>
+          <CommendButton />
           {cookies.access_token &&
             jwtDecode(cookies.access_token).id === user_id && (
               <Button
                 as="div"
                 color="red"
                 floated="right"
-                onClick={handleDeletePost}>
+                onClick={handleDeletePost}
+              >
                 <Icon name="trash" style={{ margin: "0" }} />
               </Button>
             )}

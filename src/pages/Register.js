@@ -3,11 +3,11 @@ import { Form, Button } from "semantic-ui-react";
 import { useMutation } from "@apollo/client";
 import { REGISTER_USER } from "./../graphqls/index";
 import { useForm } from "./../utils/hooks";
-import {  useCookies } from "react-cookie";
-import {Redirect} from "react-router-dom";
+import { useCookies } from "react-cookie";
+import { Redirect } from "react-router-dom";
 
 const Register = (props) => {
-  const [cookies, setCookies] = useCookies();
+  const [cookies] = useCookies();
   const initialState = {
     name: "",
     email: "",
@@ -24,14 +24,13 @@ const Register = (props) => {
       props.history.push("/");
     },
     onError(err) {
-      console.log(err.graphQLErrors[0]);
       setErrors(err.graphQLErrors[0]);
     },
   });
   const [errors, setErrors] = useState({});
 
-  if(cookies.access_token){
-    return <Redirect to="/" />
+  if (cookies.access_token) {
+    return <Redirect to="/" />;
   }
 
   return (
@@ -73,7 +72,7 @@ const Register = (props) => {
           Register
         </Button>
       </Form>
-      {errors.message && (
+      {errors?.message && (
         <div className="ui error message">
           <ul className="list">
             <li key={errors.message}>{errors.message}</li>

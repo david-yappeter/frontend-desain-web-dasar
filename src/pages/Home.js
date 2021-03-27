@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import React, {  useEffect } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { Grid, Transition, Button, Icon } from "semantic-ui-react";
 import { QUERY_POSTS_GET_ALL } from "./../graphqls/index";

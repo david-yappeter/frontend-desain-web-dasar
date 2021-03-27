@@ -47,6 +47,7 @@ query POST_GET_BY_ID ($id: ID!){
       id
       body
       created_at
+      user_id
       user{
         name
       }

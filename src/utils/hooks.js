@@ -29,6 +29,7 @@ const useForm = (callback, initialState = {}) => {
   const onSubmit = (e) => {
     e.preventDefault();
     callback();
+    setValues(initialState);
   };
 
   return {

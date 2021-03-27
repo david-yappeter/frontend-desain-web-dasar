@@ -1,11 +1,23 @@
 import { useLazyQuery } from "@apollo/client";
 import moment from "moment";
 import React, { useEffect } from "react";
-import { Card, Grid, Image, Button, Icon, Label } from "semantic-ui-react";
+import {
+  Card,
+  Transition,
+  Grid,
+  Image,
+  Button,
+  Icon,
+  Label,
+} from "semantic-ui-react";
 import LikeButton from "../components/LikeButton";
+import PostCommend from "./../components/PostCommend";
 import { POST_GET_BY_ID } from "../graphqls";
+import PostCommendForm from "../components/PostCommendForm";
+import { useCookies } from "react-cookie";
 
 const SinglePost = (props) => {
+  const [cookies] = useCookies();
   const postID = props.match.params.postID;
   const [getPost, { loading, data, called, refetch }] = useLazyQuery(
     POST_GET_BY_ID,
@@ -41,8 +53,6 @@ const SinglePost = (props) => {
     commends,
   } = data.post;
 
-  console.log(commends);
-
   return (
     <Grid>
       <Grid.Row>
@@ -63,14 +73,14 @@ const SinglePost = (props) => {
                   {body}
                 </div>
               </Card.Description>
-              <hr />
             </Card.Content>
             <Card.Content extra>
               <LikeButton post={{ id, likes }} refetch={refetch} />
               <Button
                 as="div"
                 labelPosition="right"
-                onClick={handleCommendClick}>
+                onClick={handleCommendClick}
+              >
                 <Button color="blue">
                   <Icon name="comments" />
                 </Button>
@@ -82,23 +92,18 @@ const SinglePost = (props) => {
           </Card>
         </Grid.Column>
       </Grid.Row>
-      {commends.map((commend) => (
-        <Grid.Row>
-          <Grid.Column width={2} />
-          <Grid.Column width={10}>
-            <Card fluid>
-              <Card.Content>
-                <Card.Header>{commend.user.name}</Card.Header>
-                <Card.Meta>{moment(commend.created_at).fromNow()}</Card.Meta>
-                <Card.Description>{commend.body}</Card.Description>
-                <Button color="red" floated="right">
-                  <Icon name="trash" style={{ margin: "0" }} />
-                </Button>
-              </Card.Content>
-            </Card>
-          </Grid.Column>
-        </Grid.Row>
-      ))}
+      <Transition.Group>
+        {commends.map((commend) => (
+          <PostCommend
+            key={commend.id}
+            refetch={refetch}
+            commend={{ ...commend }}
+          />
+        ))}
+        {cookies.access_token && (
+          <PostCommendForm postID={postID} refetch={refetch} />
+        )}
+      </Transition.Group>
     </Grid>
   );
 };

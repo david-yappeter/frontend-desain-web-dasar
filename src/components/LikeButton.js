@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 import { useCookies } from "react-cookie";
-import { Form, Card, Icon, Label, Image, Button } from "semantic-ui-react";
+import { Form, Icon, Label, Button, Popup } from "semantic-ui-react";
 import jwtDecode from "jwt-decode";
 import { POST_LIKE, QUERY_POSTS_GET_ALL } from "./../graphqls/index";
 
@@ -105,16 +105,23 @@ const LikeButton = (props) => {
     );
 
   return (
-    <Form
-      className={loading ? "loading" : ""}
-      style={{ display: "inline-flex" }}>
-      <Button as="div" labelPosition="right">
-        <LikedButton />
-        <Label as="a" basic color="red" pointing="left">
-          {likes.length}
-        </Label>
-      </Button>
-    </Form>
+    <Popup
+      content="Like This Post"
+      inverted
+      trigger={
+        <Form
+          className={loading ? "loading" : ""}
+          style={{ display: "inline-flex" }}
+        >
+          <Button as="div" labelPosition="right">
+            <LikedButton />
+            <Label as="a" basic color="red" pointing="left">
+              {likes.length}
+            </Label>
+          </Button>
+        </Form>
+      }
+    />
   );
 };
 

@@ -1,6 +1,6 @@
 import { useLazyQuery } from "@apollo/client";
 import moment from "moment";
-import React, { useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 import {
   Card,
   Transition,
@@ -15,8 +15,10 @@ import PostCommend from "./../components/PostCommend";
 import { POST_GET_BY_ID } from "../graphqls";
 import PostCommendForm from "../components/PostCommendForm";
 import { useCookies } from "react-cookie";
+import { useWindowWidth } from "../utils/hooks";
 
 const SinglePost = (props) => {
+  const windowWidth = useWindowWidth();
   const [cookies] = useCookies();
   const postID = props.match.params.postID;
   const [getPost, { loading, data, called, refetch }] = useLazyQuery(
@@ -53,19 +55,39 @@ const SinglePost = (props) => {
     commends,
   } = data.post;
 
-  return (
+  const GridResponsive = ({ image, component }) => (
     <Grid>
       <Grid.Row>
-        <Grid.Column width={2}>
+        {windowWidth >= 768 && <Grid.Column width={2}>{image}</Grid.Column>}
+        <Grid.Column
+          width={windowWidth >= 768 ? 10 : windowWidth >= 480 ? 13 : 16}
+          style={windowWidth < 768 ? { margin: "auto" } : {}}
+        >
+          {component}
+        </Grid.Column>
+      </Grid.Row>
+    </Grid>
+  );
+
+  return (
+    <Fragment>
+      <GridResponsive
+        image={
           <Image
-            floated="right"
             size="small"
             src="https://st.depositphotos.com/1779253/5140/v/600/depositphotos_51405259-stock-illustration-male-avatar-profile-picture-use.jpg"
           />
-        </Grid.Column>
-        <Grid.Column width={10}>
+        }
+        component={
           <Card fluid>
             <Card.Content>
+              {windowWidth < 768 && (
+                <Image
+                  floated="right"
+                  size="mini"
+                  src="https://st.depositphotos.com/1779253/5140/v/600/depositphotos_51405259-stock-illustration-male-avatar-profile-picture-use.jpg"
+                />
+              )}
               <Card.Header>{name}</Card.Header>
               <Card.Meta>{moment(created_at).fromNow()}</Card.Meta>
               <Card.Description>
@@ -90,21 +112,28 @@ const SinglePost = (props) => {
               </Button>
             </Card.Content>
           </Card>
-        </Grid.Column>
-      </Grid.Row>
+        }
+      />
+
       <Transition.Group>
         {commends.map((commend) => (
-          <PostCommend
-            key={commend.id}
-            refetch={refetch}
-            commend={{ ...commend }}
+          <GridResponsive
+            component={
+              <PostCommend
+                key={commend.id}
+                refetch={refetch}
+                commend={{ ...commend }}
+              />
+            }
           />
         ))}
         {cookies.access_token && (
-          <PostCommendForm postID={postID} refetch={refetch} />
+          <GridResponsive
+            component={<PostCommendForm postID={postID} refetch={refetch} />}
+          />
         )}
       </Transition.Group>
-    </Grid>
+    </Fragment>
   );
 };
 

@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { Menu } from "semantic-ui-react";
-import { Link, NavLink } from "react-router-dom";
+import React, { Fragment, useState, useEffect } from "react";
+import { Menu, Sidebar, Segment, Icon } from "semantic-ui-react";
+import { Link } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import jwtDecode from "jwt-decode";
 import { useLazyQuery } from "@apollo/client";
 import { USER_ME } from "../graphqls/index";
+import { useWindowWidth } from "../utils/hooks";
 
 const MenuBar = () => {
+  const windowWidth = useWindowWidth();
+  const [visible, setVisible] = useState(false);
   const [cookies, _, removeCookies] = useCookies();
   const pathname = window.location.pathname;
   const path = pathname === "/" ? "home" : pathname.substring(1);
@@ -79,7 +82,12 @@ const MenuBar = () => {
     </Menu>
   );
 
-  return menuBar;
+  const mobileMenuBar = (
+    <Fragment>
+    </Fragment>
+  );
+
+  return windowWidth >= 480 ? menuBar : mobileMenuBar;
 };
 
 export default MenuBar;

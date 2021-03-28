@@ -38,9 +38,6 @@ const PostCommendForm = (props) => {
   });
 
   return (
-    <Grid.Row>
-      <Grid.Column width={2} />
-      <Grid.Column width={10}>
         <Card fluid>
           <Card.Content>
             <Card.Header>New Comment</Card.Header>
@@ -75,8 +72,6 @@ const PostCommendForm = (props) => {
             )}
           </Card.Content>
         </Card>
-      </Grid.Column>
-    </Grid.Row>
   );
 };
 

@@ -82,12 +82,7 @@ const MenuBar = () => {
     </Menu>
   );
 
-  const mobileMenuBar = (
-    <Fragment>
-    </Fragment>
-  );
-
-  return windowWidth >= 480 ? menuBar : mobileMenuBar;
+  return  menuBar ;
 };
 
 export default MenuBar;

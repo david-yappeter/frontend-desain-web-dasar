@@ -8,12 +8,11 @@ import {
 } from "@apollo/client";
 import { BrowserRouter, Route } from "react-router-dom";
 import { CookiesProvider, useCookies } from "react-cookie";
-import { Home, Register, Login , SinglePost} from "./pages/index";
+import { Home, Register, Login , SinglePost, Profile} from "./pages/index";
 import { Container } from "semantic-ui-react";
 import MenuBar from "./components/MenuBar";
 
 const App = () => {
-  const [cookies] = useCookies();
   const httpLink = createHttpLink({
     uri: process.env.REACT_APP_GRAPHQL_LINK,
   });
@@ -44,6 +43,7 @@ const App = () => {
             <Route exact path="/" component={Home} />
             <Route exact path="/register" component={Register} />
             <Route exact path="/login" component={Login} />
+            <Route exact path="/profile" component={Profile} />
             <Route exact path="/post/:postID" component={SinglePost} />
           </Container>
         </BrowserRouter>

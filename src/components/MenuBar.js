@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Menu, Sidebar, Segment, Icon } from "semantic-ui-react";
-import { Link } from "react-router-dom";
+import { Menu, Sidebar, Segment, Icon, Dropdown } from "semantic-ui-react";
+import { Link, Redirect } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import jwtDecode from "jwt-decode";
 import { useLazyQuery } from "@apollo/client";
@@ -23,6 +23,39 @@ const MenuBar = () => {
       },
     },
   });
+  const options = [
+    {
+      key: "user",
+      text: (
+        <span>
+          Signed in as <strong>{data?.me.name}</strong>
+        </span>
+      ),
+      disabled: true,
+    },
+    {
+      key: "profile",
+      text: (
+        <Link style={{ textDecoration: "none", color: "black" }} to="/profile">
+          Your Profile
+        </Link>
+      ),
+      value: "profile",
+    },
+    {
+      key: "sign-out",
+      text: (
+        <Link
+          style={{ textDecoration: "none", color: "black" }}
+          to="/login"
+          onClick={() => handleLogout()}
+        >
+          Sign Out
+        </Link>
+      ),
+      value: "signOut",
+    },
+  ];
 
   useEffect(() => {
     if (cookies.access_token) {
@@ -49,7 +82,18 @@ const MenuBar = () => {
     <Menu pointing secondary size="massive" color="teal">
       <Menu.Item name={data?.me.name} active as={Link} to="/" />
       <Menu.Menu position="right">
-        <Menu.Item name="Logout" as={Link} to="/login" onClick={handleLogout} />
+        {/* <Menu.Item name="Logout" as={Link} to="/login" onClick={handleLogout} /> */}
+        <Menu.Item>
+          <Dropdown
+            style={{ color: "teal" }}
+            options={options}
+            trigger={
+              <span>
+                <Icon name="user" />
+              </span>
+            }
+          />
+        </Menu.Item>
       </Menu.Menu>
     </Menu>
   ) : (
@@ -82,7 +126,7 @@ const MenuBar = () => {
     </Menu>
   );
 
-  return  menuBar ;
+  return menuBar;
 };
 
 export default MenuBar;

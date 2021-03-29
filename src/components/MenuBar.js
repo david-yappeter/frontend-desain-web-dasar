@@ -5,7 +5,7 @@ import { useCookies } from "react-cookie";
 import jwtDecode from "jwt-decode";
 import { useLazyQuery } from "@apollo/client";
 import { USER_ME } from "../graphqls/index";
-import { useWindowWidth } from "../utils/hooks";
+import { useToken, useWindowWidth } from "../utils/hooks";
 
 const MenuBar = () => {
   const windowWidth = useWindowWidth();
@@ -14,15 +14,9 @@ const MenuBar = () => {
   const pathname = window.location.pathname;
   const path = pathname === "/" ? "home" : pathname.substring(1);
   const [activeItem, setActiveItem] = useState(path);
-  const [meUser, { loading, called, data }] = useLazyQuery(USER_ME, {
-    context: {
-      headers: {
-        Authorization: cookies.access_token
-          ? "Bearer " + cookies.access_token
-          : "",
-      },
-    },
-  });
+
+  const data = useToken();
+
   const options = [
     {
       key: "user",
@@ -48,20 +42,13 @@ const MenuBar = () => {
         <Link
           style={{ textDecoration: "none", color: "black" }}
           to="/login"
-          onClick={() => handleLogout()}
-        >
+          onClick={() => handleLogout()}>
           Sign Out
         </Link>
       ),
       value: "signOut",
     },
   ];
-
-  useEffect(() => {
-    if (cookies.access_token) {
-      meUser();
-    }
-  }, [cookies.access_token]);
 
   const handleLogout = () => {
     removeCookies("access_token");
@@ -82,7 +69,6 @@ const MenuBar = () => {
     <Menu pointing secondary size="massive" color="teal">
       <Menu.Item name={data?.me.name} active as={Link} to="/" />
       <Menu.Menu position="right">
-        {/* <Menu.Item name="Logout" as={Link} to="/login" onClick={handleLogout} /> */}
         <Menu.Item>
           <Dropdown
             style={{ color: "teal" }}

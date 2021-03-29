@@ -1,4 +1,7 @@
+import { useLazyQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
+import { USER_ME } from "../graphqls/index";
 
 const useWindowWidth = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -16,6 +19,34 @@ const useWindowWidth = () => {
   }, []);
 
   return windowWidth;
+};
+
+const useToken = () => {
+  const [user, setUser] = useState(null);
+  const [cookies] = useCookies();
+  const [meUser, { loading, data }] = useLazyQuery(USER_ME, {
+    context: {
+      headers: {
+        Authorization: cookies.access_token
+          ? `Bearer ${cookies.access_token}`
+          : "",
+      },
+    },
+  });
+  useEffect(() => {
+    waitAsync();
+    return () => {};
+  }, [cookies.access_token]);
+
+  useEffect(() => {
+    setUser(data ? data : null);
+  }, [data]);
+
+  const waitAsync = async () => {
+    await meUser();
+  };
+
+  return user;
 };
 
 const useForm = (callback, initialState = {}) => {
@@ -39,4 +70,4 @@ const useForm = (callback, initialState = {}) => {
   };
 };
 
-export { useForm, useWindowWidth };
+export { useForm, useWindowWidth, useToken };

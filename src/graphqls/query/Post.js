@@ -25,6 +25,7 @@ const QUERY_POSTS_GET_ALL = gql`
         }
         user {
           name
+          avatar
         }
       }
     }
@@ -32,31 +33,33 @@ const QUERY_POSTS_GET_ALL = gql`
 `;
 
 const POST_GET_BY_ID = gql`
-query POST_GET_BY_ID ($id: ID!){
-  post(id: $id){
-    id
-    body
-    created_at
-    user_id
-    likes{
-      id
-      user_id
-      post_id
-    }
-    commends{
+  query POST_GET_BY_ID($id: ID!) {
+    post(id: $id) {
       id
       body
       created_at
       user_id
-      user{
+      likes {
+        id
+        user_id
+        post_id
+      }
+      commends {
+        id
+        body
+        created_at
+        user_id
+        user {
+          name
+          avatar
+        }
+      }
+      user {
         name
+        avatar
       }
     }
-    user{
-      name
-    }
   }
-}
-`
+`;
 
 export { QUERY_POSTS_GET_ALL, POST_GET_BY_ID };

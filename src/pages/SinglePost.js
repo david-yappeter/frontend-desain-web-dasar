@@ -50,10 +50,12 @@ const SinglePost = (props) => {
     body,
     created_at,
     user_id,
-    user: { name },
+    user: { name, avatar },
     likes,
     commends,
   } = data.post;
+
+  console.log(data.post);
 
   const GridResponsive = ({ image, component }) => (
     <Grid>
@@ -61,8 +63,7 @@ const SinglePost = (props) => {
         {windowWidth >= 768 && <Grid.Column width={2}>{image}</Grid.Column>}
         <Grid.Column
           width={windowWidth >= 768 ? 10 : windowWidth >= 480 ? 13 : 16}
-          style={windowWidth < 768 ? { margin: "auto" } : {}}
-        >
+          style={windowWidth < 768 ? { margin: "auto" } : {}}>
           {component}
         </Grid.Column>
       </Grid.Row>
@@ -76,7 +77,7 @@ const SinglePost = (props) => {
           <Image
             circular
             size="small"
-            src="https://st.depositphotos.com/1779253/5140/v/600/depositphotos_51405259-stock-illustration-male-avatar-profile-picture-use.jpg"
+            src={avatar ? avatar : process.env.REACT_APP_DEFAULT_IMAGE}
           />
         }
         component={
@@ -87,7 +88,7 @@ const SinglePost = (props) => {
                   circular
                   floated="right"
                   size="mini"
-                  src="https://st.depositphotos.com/1779253/5140/v/600/depositphotos_51405259-stock-illustration-male-avatar-profile-picture-use.jpg"
+                  src={avatar ? avatar : process.env.REACT_APP_DEFAULT_IMAGE}
                 />
               )}
               <Card.Header>{name}</Card.Header>
@@ -103,8 +104,7 @@ const SinglePost = (props) => {
               <Button
                 as="div"
                 labelPosition="right"
-                onClick={handleCommendClick}
-              >
+                onClick={handleCommendClick}>
                 <Button color="blue">
                   <Icon name="comments" />
                 </Button>

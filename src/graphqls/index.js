@@ -1,5 +1,9 @@
 import { QUERY_POSTS_GET_ALL, POST_GET_BY_ID } from "./query/Post";
-import { REGISTER_USER, LOGIN_USER } from "./mutation/Auth";
+import {
+  REGISTER_USER,
+  LOGIN_USER,
+  CHANGE_PASSWORD_USER,
+} from "./mutation/Auth";
 import { USER_ME } from "./query/Me";
 import {
   CREATE_POST,
@@ -20,4 +24,5 @@ export {
   POST_GET_BY_ID,
   POST_COMMEND_CREATE,
   POST_COMMEND_DELETE,
+  CHANGE_PASSWORD_USER,
 };

@@ -1,16 +1,64 @@
-import React from "react";
+import { useMutation } from "@apollo/client";
+import React, { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { Redirect } from "react-router";
 import { Grid, Card, Image, Divider, Form, Button } from "semantic-ui-react";
-import { useForm, useWindowWidth } from "../utils/hooks";
+import { useToken, useWindowWidth } from "../utils/hooks";
+import { CHANGE_PASSWORD_USER, USER_ME } from "./../graphqls/index";
 
 const Profile = () => {
+  const data = useToken();
   const windowWidth = useWindowWidth();
   const [cookies] = useCookies();
-  const initialValue = {
-    name: "David Yap",
+  const [values, setValues] = useState({
+    name: "",
+  });
+
+  const [changeName, { loading }] = useMutation(CHANGE_PASSWORD_USER, {
+    context: {
+      headers: {
+        Authorization: cookies.access_token
+          ? `Bearer ${cookies.access_token}`
+          : "",
+      },
+    },
+    variables: values,
+    update(cache, result) {
+      const data = cache.readQuery({
+        query: USER_ME,
+      });
+      cache.writeQuery({
+        query: USER_ME,
+        data: {
+          me: {
+            ...data.me,
+            name: values.name,
+          },
+        },
+      });
+    },
+    onError(err) {
+      console.log(err);
+    },
+  });
+
+  const onChange = (e) => {
+    const { name, value } = e.target;
+    setValues({ ...values, [name]: value });
   };
-  const { values, onChange, onSubmit } = useForm(() => {}, initialValue);
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    changeName();
+  };
+
+  useEffect(() => {
+    data && setValues({ ...values, name: data.me.name });
+  }, [data]);
+
+  if (!data) {
+    return <h1> Loading.</h1>;
+  }
 
   if (!cookies.access_token) {
     return <Redirect to="/login" />;
@@ -22,7 +70,7 @@ const Profile = () => {
       circular
       centered
       size={windowWidth >= 768 ? "small" : "tiny"}
-      src="https://st.depositphotos.com/1779253/5140/v/600/depositphotos_51405259-stock-illustration-male-avatar-profile-picture-use.jpg"
+      src={data.me.avatar ? data.me.avatar : process.env.REACT_APP_DEFAULT_IMAGE}
     />
   );
 
@@ -45,9 +93,10 @@ const Profile = () => {
                 <ProfileImage />
               </Card.Header>
             )}
-            <Form onSubmit={onSubmit}>
+            <Form onSubmit={onSubmit} className={loading ? "loading" : ""}>
               <Form.Input
                 label="Name :"
+                name="name"
                 value={values.name}
                 onChange={onChange}
                 type="text"

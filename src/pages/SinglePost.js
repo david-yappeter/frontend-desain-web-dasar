@@ -55,8 +55,6 @@ const SinglePost = (props) => {
     commends,
   } = data.post;
 
-  console.log(data.post);
-
   const GridResponsive = ({ image, component }) => (
     <Grid>
       <Grid.Row>

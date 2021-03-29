@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import moment from "moment";
 import jwtDecode from "jwt-decode";
 import { useCookies } from "react-cookie";
-import { Form, Card, Grid, Button, Icon } from "semantic-ui-react";
-import { POST_COMMEND_DELETE, POST_GET_BY_ID } from "./../graphqls/index";
+import { Form, Card, Grid, Button, Image, Icon } from "semantic-ui-react";
+import { POST_COMMEND_DELETE } from "./../graphqls/index";
 import { useMutation } from "@apollo/client";
 
 const PostCommend = (props) => {
   const [cookies] = useCookies();
   const {
     id,
-    user: { name },
+    user: { name, avatar },
     user_id,
     body,
     created_at,
@@ -39,6 +39,12 @@ const PostCommend = (props) => {
   return (
     <Card fluid>
       <Card.Content>
+        <Image
+          circular
+          floated="right"
+          size="mini"
+          src={avatar ? avatar : process.env.REACT_APP_DEFAULT_IMAGE}
+        />
         <Card.Header>{name}</Card.Header>
         <Card.Meta>{moment(created_at).fromNow()}</Card.Meta>
         <Card.Description>{body}</Card.Description>

@@ -12,6 +12,7 @@ import {
   POST_COMMEND_CREATE,
   POST_COMMEND_DELETE,
 } from "./mutation/Post";
+import { USER_EDIT_PROFILE_PICTURE } from "./mutation/User";
 
 export {
   DELETE_POST,
@@ -20,6 +21,7 @@ export {
   LOGIN_USER,
   USER_ME,
   POST_LIKE,
+  USER_EDIT_PROFILE_PICTURE,
   CREATE_POST,
   POST_GET_BY_ID,
   POST_COMMEND_CREATE,

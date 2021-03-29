@@ -1,8 +1,9 @@
 import { useMutation } from "@apollo/client";
-import React, { useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { Redirect } from "react-router";
 import { Grid, Card, Image, Divider, Form, Button } from "semantic-ui-react";
+import {EditPictureForm} from "../components/index";
 import { useToken, useWindowWidth } from "../utils/hooks";
 import { CHANGE_PASSWORD_USER, USER_ME } from "./../graphqls/index";
 
@@ -65,13 +66,18 @@ const Profile = () => {
   }
 
   const ProfileImage = () => (
-    <Image
-      centered
-      circular
-      centered
-      size={windowWidth >= 768 ? "small" : "tiny"}
-      src={data.me.avatar ? data.me.avatar : process.env.REACT_APP_DEFAULT_IMAGE}
-    />
+    <div style={{ position: "relative" }}>
+      <Image
+        centered
+        circular
+        centered
+        size={windowWidth >= 768 ? "small" : "tiny"}
+        src={
+          data.me.avatar ? data.me.avatar : process.env.REACT_APP_DEFAULT_IMAGE
+        }
+      />
+      <EditPictureForm />
+    </div>
   );
 
   return (

@@ -112,7 +112,7 @@ const Profile = () => {
               </Button>
             </Form>
             <h5>Email :</h5>
-            <span>davidyap11les@gmail.com</span>
+            <span>{data?.me.email}</span>
           </Grid.Column>
         </Grid>
       </Card.Content>

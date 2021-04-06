@@ -22,4 +22,4 @@ jobs:
     - name: Build
       run: yarn build
     - name: Test
-      run: yarn test --forbid-only
+      run: yarn test

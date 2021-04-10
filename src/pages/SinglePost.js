@@ -114,7 +114,6 @@ const SinglePost = (props) => {
           </Card>
         }
       />
-
       <Transition.Group>
         {commends.map((commend) => (
           <GridResponsive

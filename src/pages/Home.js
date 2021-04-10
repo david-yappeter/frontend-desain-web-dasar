@@ -1,11 +1,11 @@
-import React, {  useEffect } from "react";
+import React, { useEffect } from "react";
 import { useLazyQuery } from "@apollo/client";
-import { Grid, Transition, Button, Icon } from "semantic-ui-react";
+import { Grid, Transition, Button, Placeholder, Icon } from "semantic-ui-react";
 import { QUERY_POSTS_GET_ALL } from "./../graphqls/index";
 import { useCookies } from "react-cookie";
 
 import { useWindowWidth } from "./../utils/hooks";
-import { PostCard, PostForm } from "./../components/index";
+import { PostCard, PostForm, SkeletonCard } from "./../components/index";
 
 const Home = () => {
   const windowWidth = useWindowWidth();
@@ -44,7 +44,7 @@ const Home = () => {
       </Grid.Row>
       <Grid.Row>
         {loading ? (
-          <h1> Loading Posts</h1>
+          <SkeletonCard />
         ) : (
           <Transition.Group>
             {cookies.access_token && (

@@ -90,7 +90,15 @@ const PostCard = (props) => {
 
   return (
     <Form className={loading ? "loading" : ""}>
-      <Card fluid>
+      <Card
+        fluid
+        style={{
+          background: "rgba( 255, 255, 255, 0.20 )",
+          backdropFilter: "blur( 4px )",
+          webkitBackdropFilter: "blur( 8.5px )",
+          borderRadius: "10px",
+          border: "1px solid rgba( 255, 255, 255, 0.18 )",
+        }}>
         <Card.Content as={Link} to={`/post/${id}`}>
           <Image
             circular
